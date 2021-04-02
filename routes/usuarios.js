@@ -1,8 +1,19 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const {validarCampos} = require('../middlewares/validar-campos')
+//Si no existiera el index.js se usarían estos require
+// const {validarCampos} = require('../middlewares/validar-campos');
+// const { esAdminRole, tieneRole } = require('../middlewares/validar-roles');
+// const { validarJWT } = require('../middlewares/validar-jwt');
+
+const {
+    validarCampos,
+    validarJWT,
+    esAdminRole,
+    tieneRole
+} = require('../middlewares')
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
+
 const { 
     usuariosGet, 
     usuariosPut, 
@@ -37,6 +48,9 @@ router.post('/', [
 ],usuariosPost );
 
 router.delete('/:id',[
+    validarJWT,
+    //esAdminRole, // este middleware fuerza que el user sea administrador
+    tieneRole('ADMIN_ROLE','VENTAS_ROLE'),
     check('id','No es un ID válido').isMongoId(),
     check('id').custom( existeUsuarioPorId),
     validarCampos

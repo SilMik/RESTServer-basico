@@ -51,7 +51,8 @@ UsuarioSchema.methods.toJSON = function() {
     //Sacar "algo" del this.tobject porque hace referencia a la instancia
     //sacara la version y el password al usar el toJSON y el resto de argumentos
     //los dejara en usuario
-    const { __v, password, ...usuario } = this.toObject();
+    const { __v, password, _id, ...usuario } = this.toObject();
+    usuario.uid = _id;
     return usuario;
 }
 
